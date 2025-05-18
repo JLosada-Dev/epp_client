@@ -1,82 +1,98 @@
-<div
-  class="flex flex-col h-full w-full bg-gradient-to-t from-purple-50/70 to-white rounded-2xl shadow-inner border border-gray-100 p-4 sm:p-6 box-border"
->
+<div class="contenedor-exterior h-full max-h-full overflow-hidden">
   <div
-    class="flex-1 overflow-y-auto space-y-3 min-h-[200px]"
-    id="chat-messages"
+    class="flex flex-col h-full w-full bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-4 sm:p-6 box-border"
   >
-    <div
-      *ngFor="let m of log"
-      class="flex"
-      [ngClass]="{
-        'justify-end': m.role === 'user',
-        'justify-start': m.role === 'bot',
-        'justify-center': m.role === 'system',
-      }"
-    >
-      <span
-        class="inline-block max-w-full sm:max-w-md md:max-w-lg px-4 py-2 rounded-2xl break-words text-sm sm:text-base shadow"
+    <div class="flex-1 overflow-y-auto space-y-4" id="chat-messages">
+      <div
+        *ngFor="let m of log"
+        class="flex"
         [ngClass]="{
-          'bg-purple-600 text-white rounded-br-none': m.role === 'user',
-          'bg-white text-gray-900 border border-purple-100 rounded-bl-none':
-            m.role === 'bot',
-          'bg-gray-100 text-gray-700 text-xs italic border border-gray-200':
-            m.role === 'system',
+          'justify-end': m.role === 'user',
+          'justify-start': m.role === 'bot',
+          'justify-center': m.role === 'system',
         }"
       >
-        {{ m.text }}
-      </span>
+        <span
+          class="inline-block max-w-full sm:max-w-md md:max-w-lg px-4 py-3 rounded-xl break-words text-sm sm:text-base shadow transition duration-200"
+          [ngClass]="{
+            'bg-teal-500 text-white rounded-br-none': m.role === 'user',
+            'bg-slate-700 text-gray-200 rounded-bl-none': m.role === 'bot',
+            'bg-slate-600 text-gray-300 text-xs italic': m.role === 'system',
+          }"
+        >
+          {{ m.text }}
+        </span>
+      </div>
+
+      <!-- Indicador de carga -->
+      <div *ngIf="isLoading" class="flex justify-start">
+        <span
+          class="inline-block px-4 py-3 rounded-xl bg-slate-700 text-teal-400 border border-slate-600"
+        >
+          <div class="flex space-x-1">
+            <div class="w-2 h-2 bg-teal-400 rounded-full animate-bounce"></div>
+            <div
+              class="w-2 h-2 bg-teal-400 rounded-full animate-bounce"
+              style="animation-delay: 0.2s"
+            ></div>
+            <div
+              class="w-2 h-2 bg-teal-400 rounded-full animate-bounce"
+              style="animation-delay: 0.4s"
+            ></div>
+          </div>
+        </span>
+      </div>
     </div>
 
-    <!-- Indicador de carga -->
-    <div *ngIf="isLoading" class="flex justify-start">
-      <span
-        class="inline-block px-4 py-2 rounded-2xl bg-white border border-purple-100 text-purple-600"
-      >
-        <div class="flex space-x-1">
-          <div class="w-2 h-2 bg-purple-600 rounded-full animate-bounce"></div>
-          <div
-            class="w-2 h-2 bg-purple-600 rounded-full animate-bounce"
-            style="animation-delay: 0.2s"
-          ></div>
-          <div
-            class="w-2 h-2 bg-purple-600 rounded-full animate-bounce"
-            style="animation-delay: 0.4s"
-          ></div>
-        </div>
-      </span>
-    </div>
-  </div>
-
-  <form
-    class="flex gap-2 pt-4 border-t border-gray-100 w-full"
-    (ngSubmit)="send()"
-  >
-    <input
-      [(ngModel)]="msg"
-      name="msg"
-      autocomplete="off"
-      placeholder="Pregunta sobre EPP…"
-      class="flex-1 min-w-0 border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-300 transition text-sm sm:text-base bg-white"
-      [disabled]="isLoading"
-    />
-    <button
-      type="submit"
-      class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition"
-      [disabled]="isLoading || !msg.trim()"
-      [ngClass]="{ 'opacity-50 cursor-not-allowed': isLoading || !msg.trim() }"
+    <form
+      class="flex gap-3 pt-4 border-t border-slate-700 w-full sticky bottom-0 bg-slate-800 z-10"
+      (ngSubmit)="send()"
     >
-      Enviar
-    </button>
-  </form>
+      <input
+        [(ngModel)]="msg"
+        name="msg"
+        autocomplete="off"
+        placeholder="Pregunta sobre EPP…"
+        class="flex-1 min-w-0 border border-slate-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-sm sm:text-base bg-slate-700 text-gray-100 shadow"
+        [disabled]="isLoading"
+      />
+      <button
+        type="submit"
+        class="px-5 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-lg font-semibold transition shadow"
+        [disabled]="isLoading || !msg.trim()"
+        [ngClass]="{
+          'opacity-50 cursor-not-allowed': isLoading || !msg.trim(),
+        }"
+      >
+        Enviar
+      </button>
+    </form>
 
-  <!-- Indicador de elementos faltantes -->
-  <div
-    *ngIf="missing && missing.length > 0"
-    class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs"
-  >
-    <p class="font-medium text-amber-700">
-      EPP faltante: {{ missing.join(', ') }}
-    </p>
+    <!-- Indicador de elementos faltantes -->
+    <div
+      *ngIf="missing && missing.length > 0"
+      class="mt-3 px-4 py-3 bg-amber-900/70 border-l-4 border-amber-500 rounded-lg text-sm text-amber-100 shadow-md animate-pulse"
+    >
+      <div class="flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-amber-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <p class="font-semibold">EPP faltante:</p>
+      </div>
+      <p class="mt-1 pl-7 font-medium text-amber-200">
+        {{ missing.join(', ') }}
+      </p>
+    </div>
   </div>
 </div>

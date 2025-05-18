@@ -1,99 +1,195 @@
-<div class="flex flex-col items-center gap-4">
-  <div class="flex gap-2">
-    <label
-      class="btn px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
-    >
-      <input
-        type="file"
-        accept="image/*"
-        hidden
-        (change)="onFile($event, 'img')"
-      />
-      Subir Imagen
-    </label>
-    <label
-      class="btn px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
-    >
-      <input
-        type="file"
-        accept="video/*"
-        hidden
-        (change)="onFile($event, 'vid')"
-      />
-      Subir Video
-    </label>
-  </div>
-
-  <!-- Loader -->
-  <div *ngIf="loading" class="py-4">
+<div class="min-h-screen bg-slate-900 py-8">
+  <div class="container mx-auto px-4 sm:px-8 flex flex-col items-center">
+    <!-- Upload Controls -->
     <div
-      class="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full"
-    ></div>
-    <p class="mt-2 text-indigo-600">Procesando...</p>
-  </div>
+      class="w-full max-w-3xl bg-slate-800 rounded-xl shadow-lg p-6 mb-8 border border-slate-700"
+    >
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <!-- Upload Buttons -->
+        <div class="flex flex-wrap gap-4">
+          <label
+            class="btn px-5 py-2 bg-teal-800 rounded-lg shadow text-white font-medium hover:bg-teal-400 transition duration-300 cursor-pointer flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFile($event, 'img')"
+            />
+            Subir Imagen
+          </label>
+          <label
+            class="btn px-5 py-2 bg-teal-800 text-white font-medium rounded-lg shadow hover:bg-teal-400 transition duration-300 cursor-pointer flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
+              />
+            </svg>
+            <input
+              type="file"
+              accept="video/*"
+              hidden
+              (change)="onFile($event, 'vid')"
+            />
+            Subir Video
+          </label>
+        </div>
 
-  <!-- Error -->
-  <div
-    *ngIf="error"
-    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
-  >
-    {{ error }}
-  </div>
+        <!-- Loader -->
+        <div *ngIf="loading" class="flex items-center gap-3 py-2">
+          <div
+            class="animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full"
+          ></div>
+          <p class="text-teal-400 font-medium">Procesando...</p>
+        </div>
+      </div>
 
-  <!-- Mostrar imagen solo si hay preview y NO hay video cargado -->
-  <div *ngIf="preview && !videoUrl" class="relative">
-    <img
-      #imgEl
-      [src]="preview"
-      (load)="setDims(imgEl)"
-      class="max-w-md rounded shadow"
-      alt="Preview"
-    />
-    <epp-overlay
-      *ngIf="boxes.length"
-      [boxes]="boxes"
-      [dims]="dims"
-      [verdict]="verdict"
-    ></epp-overlay>
-  </div>
+      <!-- Error -->
+      <div
+        *ngIf="error"
+        class="mt-4 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm"
+      >
+        <div class="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-2"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          {{ error }}
+        </div>
+      </div>
+    </div>
 
-  <!-- Mostrar video solo si hay video cargado -->
-  <div *ngIf="videoUrl" class="relative">
-    <video
-      #videoEl
-      [src]="videoUrl"
-      controls
-      width="400"
-      class="rounded shadow"
-      (play)="onPlay()"
-      (pause)="onPause()"
-    ></video>
-    <epp-overlay
-      *ngIf="currentBoxes.length"
-      [boxes]="currentBoxes"
-      [dims]="currentDims"
-      [verdict]="currentVerdict"
-    ></epp-overlay>
-  </div>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-6xl">
+      <!-- Column 1: Preview -->
+      <div
+        class="flex flex-col bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700"
+      >
+        <h2
+          class="text-xl font-semibold text-gray-100 mb-4 border-b border-slate-700 pb-2"
+        >
+          Previsualización
+        </h2>
 
-  <!-- Veredicto para imágenes -->
-  <div *ngIf="verdict && !videoUrl" class="mt-2 text-lg font-semibold">
-    {{ verdict }}
-  </div>
+        <!-- Image/Video Container -->
+        <div
+          class="overflow-auto"
+          [ngStyle]="{ 'max-height': preview || videoUrl ? '800px' : 'auto' }"
+        >
+          <div
+            *ngIf="preview && !videoUrl"
+            class="relative flex justify-center"
+          >
+            <img
+              #imgEl
+              [src]="preview"
+              (load)="setDims(imgEl)"
+              class="max-w-full rounded-lg shadow-sm"
+              alt="Preview"
+            />
+            <epp-overlay
+              *ngIf="boxes.length"
+              [boxes]="boxes"
+              [dims]="dims"
+              [verdict]="verdict"
+            ></epp-overlay>
+          </div>
+          <div *ngIf="videoUrl" class="relative flex justify-center">
+            <video
+              #videoEl
+              [src]="videoUrl"
+              controls
+              class="max-w-full rounded-lg shadow-sm"
+              (play)="onPlay()"
+              (pause)="onPause()"
+            ></video>
+            <epp-overlay
+              *ngIf="currentBoxes.length"
+              [boxes]="currentBoxes"
+              [dims]="currentDims"
+              [verdict]="currentVerdict"
+            ></epp-overlay>
+          </div>
+        </div>
 
-  <!-- Elementos faltantes -->
-  <div
-    *ngIf="missingItems.length > 0"
-    class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg"
-  >
-    <p class="font-medium text-amber-700">Elementos EPP faltantes:</p>
-    <ul class="list-disc list-inside mt-1 text-amber-800">
-      <li *ngFor="let item of missingItems">{{ item }}</li>
-    </ul>
-  </div>
+        <!-- Verdict & Missing Items -->
+        <div class="mt-4 space-y-3">
+          <div
+            *ngIf="verdict && !videoUrl"
+            class="text-center py-2 px-4 rounded-lg font-semibold"
+            [ngClass]="{
+              'bg-green-100 text-green-800': verdict.includes('cumple'),
+              'bg-red-100 text-red-800': !verdict.includes('cumple'),
+            }"
+          >
+            {{ verdict }}
+          </div>
+          <div
+            *ngIf="missingItems.length"
+            class="p-4 bg-amber-50 border border-amber-200 rounded-lg"
+          >
+            <div class="flex items-center gap-2 text-amber-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>Elementos EPP faltantes:</span>
+            </div>
+            <ul class="list-disc list-inside mt-2 text-amber-800">
+              <li *ngFor="let item of missingItems">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <!-- Componente de chat -->
-  <div class="mt-4 border border-gray-200 rounded-lg h-60">
-    <epp-chat #chat></epp-chat>
+      <!-- Column 2: Chat -->
+      <div
+        class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 flex flex-col"
+      >
+        <h2
+          class="text-xl font-semibold text-gray-100 p-6 border-b border-slate-700"
+        >
+          Asistente EPP
+        </h2>
+
+        <div class="flex-grow overflow-auto max-h-[600px]">
+          <epp-chat #chat class="h-full"></epp-chat>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

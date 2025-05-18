@@ -1,43 +1,50 @@
-<div class="min-h-screen flex justify-center items-center bg-gradient-to-br from-indigo-100 via-white to-purple-100 p-8">
-  <div class="grid grid-cols-[240px_1fr_340px] gap-8 bg-white/80 backdrop-blur-lg max-w-6xl w-full h-[80vh] rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-    <!-- Sidebar Navigation -->
-    <nav class="flex flex-col gap-4 py-8 px-6 bg-gradient-to-b from-indigo-200/60 to-white rounded-l-2xl border-r border-gray-100">
-      <h1 class="text-2xl font-bold text-indigo-700 mb-8 tracking-tight">EPP Client</h1>
-      <ul class="flex flex-col gap-3">
-        <li>
-          <a routerLink="/" routerLinkActive="bg-indigo-600 text-white shadow-lg" class="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-gray-700 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 active:scale-95">
-            <span class="material-icons">image</span>
-            Imagen/Video
-          </a>
-        </li>
-        <li>
-          <a routerLink="/webcam" routerLinkActive="bg-indigo-600 text-white shadow-lg" class="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-gray-700 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 active:scale-95">
-            <span class="material-icons">videocam</span>
-            Webcam
-          </a>
-        </li>
-        <li>
-          <a routerLink="/chat" routerLinkActive="bg-indigo-600 text-white shadow-lg" class="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-gray-700 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 active:scale-95">
-            <span class="material-icons">chat</span>
-            Chat FAQ
-          </a>
-        </li>
-      </ul>
-      <div class="flex-1"></div>
-      <footer class="text-xs text-gray-400 mt-8">© 2024 EPP Project</footer>
-    </nav>
-    <!-- Main Content -->
-    <main class="bg-white rounded-xl shadow p-8 overflow-auto flex flex-col">
-      <router-outlet></router-outlet>
-    </main>
-    <!-- Chat Sidebar -->
-    <aside class="h-full bg-gradient-to-t from-purple-100/60 to-white rounded-r-2xl shadow-inner p-6 flex flex-col overflow-hidden border-l border-gray-100">
-      <h2 class="text-lg font-semibold text-purple-700 mb-4">Asistente</h2>
-      <div class="flex-1 min-h-0 flex flex-col">
-        <epp-chat class="flex-1 min-h-0"></epp-chat>
+<div class="min-h-screen flex flex-col bg-slate-900">
+  <!-- Header minimalista -->
+  <header class="py-4 shadow-sm bg-slate-800">
+    <div class="container mx-auto px-4 sm:px-8">
+      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-100 text-center">
+        EPP Client
+      </h1>
+      <div class="mt-2 mx-auto w-16 h-1 bg-teal-500 rounded"></div>
+    </div>
+  </header>
+
+  <!-- Contenedor principal optimizado -->
+  <main class="flex-grow container mx-auto px-4 sm:px-8 py-6 overflow-hidden">
+    <section
+      class="mx-auto max-w-4xl h-full bg-slate-800 shadow-xl rounded-xl border border-slate-700 flex flex-col"
+    >
+      <!-- Botón Webcam destacado -->
+      <div class="pt-4 pb-6 flex justify-center border-b border-slate-700">
+        <button
+          routerLink="/webcam"
+          class="flex items-center gap-2 px-5 py-3 bg-teal-600 text-white font-medium rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 active:bg-teal-700 active:scale-95 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-300 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer animate-pulse"
+        >
+          <span>Abrir Webcam</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
       </div>
-    </aside>
-  </div>
-  <!-- Material Icons CDN (add in your index.html if not present) -->
-  <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+
+      <!-- Contenido dinámico con espacio optimizado -->
+      <div class="p-4 sm:p-6 overflow-auto flex-grow text-gray-100">
+        <router-outlet></router-outlet>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer más visible -->
+  <footer class="py-3 text-center text-gray-300 text-sm">
+    © 2025 EPP Client
+  </footer>
 </div>
