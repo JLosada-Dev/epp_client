@@ -1,0 +1,99 @@
+<div class="flex flex-col items-center gap-4">
+  <div class="flex gap-2">
+    <label
+      class="btn px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
+    >
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        (change)="onFile($event, 'img')"
+      />
+      Subir Imagen
+    </label>
+    <label
+      class="btn px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
+    >
+      <input
+        type="file"
+        accept="video/*"
+        hidden
+        (change)="onFile($event, 'vid')"
+      />
+      Subir Video
+    </label>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="py-4">
+    <div
+      class="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full"
+    ></div>
+    <p class="mt-2 text-indigo-600">Procesando...</p>
+  </div>
+
+  <!-- Error -->
+  <div
+    *ngIf="error"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
+  >
+    {{ error }}
+  </div>
+
+  <!-- Mostrar imagen solo si hay preview y NO hay video cargado -->
+  <div *ngIf="preview && !videoUrl" class="relative">
+    <img
+      #imgEl
+      [src]="preview"
+      (load)="setDims(imgEl)"
+      class="max-w-md rounded shadow"
+      alt="Preview"
+    />
+    <epp-overlay
+      *ngIf="boxes.length"
+      [boxes]="boxes"
+      [dims]="dims"
+      [verdict]="verdict"
+    ></epp-overlay>
+  </div>
+
+  <!-- Mostrar video solo si hay video cargado -->
+  <div *ngIf="videoUrl" class="relative">
+    <video
+      #videoEl
+      [src]="videoUrl"
+      controls
+      width="400"
+      class="rounded shadow"
+      (play)="onPlay()"
+      (pause)="onPause()"
+    ></video>
+    <epp-overlay
+      *ngIf="currentBoxes.length"
+      [boxes]="currentBoxes"
+      [dims]="currentDims"
+      [verdict]="currentVerdict"
+    ></epp-overlay>
+  </div>
+
+  <!-- Veredicto para imágenes -->
+  <div *ngIf="verdict && !videoUrl" class="mt-2 text-lg font-semibold">
+    {{ verdict }}
+  </div>
+
+  <!-- Elementos faltantes -->
+  <div
+    *ngIf="missingItems.length > 0"
+    class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg"
+  >
+    <p class="font-medium text-amber-700">Elementos EPP faltantes:</p>
+    <ul class="list-disc list-inside mt-1 text-amber-800">
+      <li *ngFor="let item of missingItems">{{ item }}</li>
+    </ul>
+  </div>
+
+  <!-- Componente de chat -->
+  <div class="mt-4 border border-gray-200 rounded-lg h-60">
+    <epp-chat #chat></epp-chat>
+  </div>
+</div>
