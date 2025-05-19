@@ -58,67 +58,57 @@ export class DetectorService {
         }),
       );
   }
+
   webcamStream(): Subject<any> {
-    const subj = new Subject();
+    const subj = new Subject<any>();
     let ws: WebSocket;
 
     try {
-      // Importante: Asegúrate de que la URL termine con '/ws'
+      // Construye la URL WS (ws:// o wss://) sin slash final
       const wsUrl = this.base
         .replace('http://', 'ws://')
         .replace('https://', 'wss://')
-        .replace(/\/$/, ''); // Eliminar slash final si existe
-
-      console.log('Conectando WebSocket a:', `${wsUrl}/ws`);
+        .replace(/\/$/, '');
       ws = new WebSocket(`${wsUrl}/ws`);
 
       ws.onopen = () => {
-        console.log('WebSocket connection opened');
-        // Enviar mensaje inicial para establecer la conexión
-        ws.send(JSON.stringify({ type: 'connect', client: 'angular' }));
+        console.log('WebSocket conectado, esperando frames de cámara...');
+        // NO enviamos JSON ni handshake de texto
       };
 
       ws.onmessage = (ev) => {
         try {
           const data = JSON.parse(ev.data);
-          console.log('WebSocket message received:', data);
-
-          // Transformar la respuesta según su tipo
-          if (data.type === 'detection') {
-            // Esto es una respuesta de detección
-            const detection: DetectResponse = {
-              ok: data.ok || false,
-              boxes: data.boxes || [],
-              missing: data.missing || [],
-              verdict: data.ok
-                ? '✅ Cumple con EPP'
-                : `❌ Falta: ${(data.missing || []).join(', ')}`,
-            };
-            subj.next(detection);
-          } else {
-            // Pasar los datos tal como vienen
-            subj.next(data);
-          }
+          // Convertimos la respuesta del backend en DetectResponse
+          const detection: DetectResponse = {
+            ok: data.ok || false,
+            boxes: data.boxes || [],
+            missing: data.missing || [],
+            verdict: data.ok
+              ? '✅ Cumple con EPP'
+              : `❌ Falta: ${(data.missing || []).join(', ')}`,
+          };
+          subj.next(detection);
         } catch (e) {
-          console.error('Error parsing WebSocket message:', e);
+          console.error('Error parseando mensaje WS:', e);
         }
       };
 
       ws.onerror = (e) => {
-        console.error('WebSocket error:', e);
+        console.error('WS error:', e);
         subj.error(new Error('Error en la conexión WebSocket'));
       };
 
       ws.onclose = (event) => {
         console.log(
-          `WebSocket connection closed: code=${event.code}, reason=${event.reason}`,
+          `WebSocket cerrado: code=${event.code}, reason=${event.reason}`,
         );
-
-        // Si el cierre no fue limpio (por ejemplo, por un error), notificar
         if (event.code !== 1000) {
           subj.error(
             new Error(
-              `Conexión WebSocket cerrada: ${event.reason || 'Error desconocido'}`,
+              `Conexión WebSocket cerrada inesperadamente: ${
+                event.reason || 'sin razón'
+              }`,
             ),
           );
         } else {
@@ -126,27 +116,30 @@ export class DetectorService {
         }
       };
 
-      // Cuando el Subject se complete o haya error, cerramos el WebSocket
+      // Asegura cierre de WS cuando el Subject complete o falle
       subj.subscribe({
         complete: () => {
-          if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.close();
+          }
         },
         error: () => {
-          if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.close();
+          }
         },
       });
 
-      // Enviamos los datos cuando alguien emite en el Subject
-      const originalNext = subj.next;
-      subj.next = function (this: Subject<any>, value: any) {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify(value));
-          return originalNext.call(this, value);
+      // Sobrescribe next PARA SOLO ENVIAR Blob (JPEG) como binario
+      const originalNext = subj.next.bind(subj);
+      subj.next = (value: any) => {
+        if (ws.readyState === WebSocket.OPEN && value instanceof Blob) {
+          ws.send(value);
         }
-        return originalNext.call(this, value);
-      } as any;
+        return originalNext(value);
+      };
     } catch (e) {
-      console.error('Error creating WebSocket:', e);
+      console.error('No se pudo crear WebSocket:', e);
       subj.error(new Error('No se pudo crear la conexión WebSocket'));
     }
 
