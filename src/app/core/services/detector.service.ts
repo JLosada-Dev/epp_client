@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable, catchError, throwError } from 'rxjs';
+import { Subject, catchError, throwError } from 'rxjs';
 import {
   DetectResponse,
   AnalyseCompleteResponse,
@@ -58,22 +58,8 @@ export class DetectorService {
         }),
       );
   }
-
-  diagnose(question: string) {
-    return this.http
-      .post<ChatResponse>(`${this.base}diagnose`, { question })
-      .pipe(
-        catchError((err) => {
-          console.error('Error en diagnóstico:', err);
-          return throwError(
-            () => new Error('No se pudo realizar el diagnóstico.'),
-          );
-        }),
-      );
-  }
-
   webcamStream(): Subject<any> {
-    const subj = new Subject<any>();
+    const subj = new Subject();
     let ws: WebSocket;
 
     try {
@@ -154,9 +140,10 @@ export class DetectorService {
       const originalNext = subj.next;
       subj.next = function (this: Subject<any>, value: any) {
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(value);
+          ws.send(JSON.stringify(value));
           return originalNext.call(this, value);
         }
+        return originalNext.call(this, value);
       } as any;
     } catch (e) {
       console.error('Error creating WebSocket:', e);

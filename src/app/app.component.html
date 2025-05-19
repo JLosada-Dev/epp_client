@@ -1,50 +1,60 @@
-<div class="min-h-screen flex flex-col bg-slate-900">
-  <!-- Header minimalista -->
-  <header class="py-4 shadow-sm bg-slate-800">
-    <div class="container mx-auto px-4 sm:px-8">
-      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-100 text-center">
-        EPP Client
+<div class="flex flex-col min-h-screen bg-slate-900">
+  <!-- Header elegante sticky -->
+  <header
+    class="py-4 bg-slate-800/90 backdrop-blur-sm shadow-lg sticky top-0 z-20"
+  >
+    <div class="container mx-auto px-4 sm:px-8 text-center">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-100 tracking-tight">
+        <a
+          routerLink="/"
+          class="cursor-pointer hover:text-teal-400 focus:text-teal-300 active:scale-95 transform transition-all duration-200 ease-in-out"
+        >
+          EPP Client
+        </a>
       </h1>
-      <div class="mt-2 mx-auto w-16 h-1 bg-teal-500 rounded"></div>
+      <div class="mt-2 mx-auto w-20 h-1 bg-teal-500 rounded-full"></div>
     </div>
   </header>
 
-  <!-- Contenedor principal optimizado -->
-  <main class="flex-grow container mx-auto px-4 sm:px-8 py-6 overflow-hidden">
-    <section
-      class="mx-auto max-w-4xl h-full bg-slate-800 shadow-xl rounded-xl border border-slate-700 flex flex-col"
-    >
-      <!-- Botón Webcam destacado -->
-      <div class="pt-4 pb-6 flex justify-center border-b border-slate-700">
-        <button
-          routerLink="/webcam"
-          class="flex items-center gap-2 px-5 py-3 bg-teal-600 text-white font-medium rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 active:bg-teal-700 active:scale-95 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-300 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer animate-pulse"
+  <!-- Botón Webcam destacado -->
+  <div class="bg-slate-900 py-6">
+    <div class="container mx-auto px-4 sm:px-8 flex justify-center">
+      <button
+        routerLink="/webcam"
+        class="flex items-center gap-2 px-6 py-3 bg-teal-600 text-white font-semibold rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 active:bg-teal-700 active:scale-95 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-300 focus:ring-offset-2 focus:ring-offset-slate-900"
+      >
+        <span>Abrir Webcam</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          <span>Abrir Webcam</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
+          <path
+            fill-rule="evenodd"
+            d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
 
-      <!-- Contenido dinámico con espacio optimizado -->
-      <div class="p-4 sm:p-6 overflow-auto flex-grow text-gray-100">
+  <!-- Contenido principal -->
+  <main class="container mx-auto px-4 sm:px-8 pb-8 w-full flex-grow">
+    <section
+      class="w-full max-w-6xl mx-auto bg-slate-800 rounded-2xl shadow-xl border border-slate-700"
+    >
+      <div class="p-4 sm:p-6">
         <router-outlet></router-outlet>
       </div>
     </section>
   </main>
 
-  <!-- Footer más visible -->
-  <footer class="py-3 text-center text-gray-300 text-sm">
+  <!-- Footer elegante -->
+  <footer
+    class="py-4 text-center text-sm text-slate-500 border-t border-slate-700"
+  >
     © 2025 EPP Client
   </footer>
 </div>
